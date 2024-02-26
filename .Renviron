@@ -1,0 +1,7 @@
+FIREBASE_API_KEY="AIzaSyDZh85BQJrxCVtc9txK1WKrbclEkYdH8HA"
+FIREBASE_PROJECT_ID="brpa-dev"
+FIREBASE_AUTH_DOMAIN="brpa-dev.firebaseapp.com"
+FIREBASE_STORAGE_BUCKET="brpa-dev.appspot.com"
+FIREBASE_APP_ID="591224084861"
+PASS="examplepass"
+APP_NAME="brisk"

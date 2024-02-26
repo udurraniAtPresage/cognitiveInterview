@@ -3,14 +3,77 @@
 #' @param request Internal parameter for `{shiny}`.
 #'     DO NOT REMOVE.
 #' @import shiny
+#' @import bslib
+#' @import shinyjs
+#' @import firebase
 #' @noRd
+#'
+# Header elements and Theme
+# ui_secure <- page_fluid(
+#   firebaseUIContainer(),
+#
+#   ## Theme
+#
+#   theme = bs_theme(
+#     version = 5,
+#     bg = "#1a1a1a",
+#     fg = "#ffffff",
+#     primary = "#00abc5",
+#     success = "#39b54a",
+#     danger = "#d7df23",
+#     warning = "#8dc63f",
+#     base_font = font_google("Libre Franklin"),
+#     preset = "shiny",
+#     heading_font = font_google("Libre Franklin")
+#   ),
+#
+#
+#   ## This will show the ui_secret (defined below) once the user is signed in
+#   shiny::uiOutput("logged_in_ui")
+# )
+
 app_ui <- function(request) {
   tagList(
-    # Leave this function for adding external resources
     golem_add_external_resources(),
-    # Your application UI logic
-    fluidPage(
-      h1("cognitiveInterview")
+    page_navbar(
+      theme = bs_theme(
+        version = 5,
+        bg = "#1a1a1a",
+        fg = "#ffffff",
+        primary = "#00abc5",
+        success = "#39b54a",
+        danger = "#d7df23",
+        warning = "#8dc63f",
+        base_font = font_google("Libre Franklin"),
+        preset = "shiny",
+        heading_font = font_google("Libre Franklin")
+      ),
+
+      title = tags$span(
+        tags$img(
+          src = "www/logo.png",
+          width = "46px",
+          height = "auto",
+          class = "me-3"
+        ),
+        "Cognitive Interview"
+      ),
+
+      sidebar = sidebar(
+        firebase::reqSignin(instructor_pilots_name_inputs),
+        br(), br(), br(),
+        width = 300
+      ),
+
+
+      conditionalPanel(
+        condition = "input.day !== ''",
+        shiny::uiOutput("day_page")
+      ),
+
+      nav_item(
+        uiOutput("sign_out_button")
+      )
     )
   )
 }
@@ -30,12 +93,24 @@ golem_add_external_resources <- function() {
   )
 
   tags$head(
-    favicon(),
-    bundle_resources(
-      path = app_sys("app/www"),
-      app_title = "cognitiveInterview"
-    )
+    firebaseUIContainer(),
+    # bundle_resources(
+    #   path = app_sys("app/www"),
+    #   app_title = "cognitiveInterview"
+    # ),
     # Add here other external resources
     # for example, you can add shinyalert::useShinyalert()
+    tags$script(type = "text/javascript", src = "www/scrollPage.js"),
+    tags$button(id = "scroll-to-top-button",
+                onclick = "topFunction()",
+                "⇧"),
+    tags$link(rel = "stylesheet", type = "text/css", href = "www/styles.css"),
+    tags$script(src = "www/reset.js"),
+    tags$script(src = "www/handwriting.js"),
+    tags$script(src = "www/handwriting.canvas.js"),
+    tags$script(src = "www/handwriting_for_shiny3.js"),
+    tags$script(src = "www/change_color.js"),
+    useFirebase(), # import dependencies
+    useShinyjs(),
   )
 }
