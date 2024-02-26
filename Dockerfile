@@ -20,8 +20,8 @@ RUN Rscript -e 'remotes::install_github("JohnCoene/firebase@b72e8847191d7826f0bf
 RUN mkdir /build_zone
 ADD . /build_zone
 WORKDIR /build_zone
-COPY ./.Renviron /build_zone/
 RUN R -e 'remotes::install_local(upgrade="never")'
 RUN rm -rf /build_zone
 EXPOSE 80
+COPY .Renviron .Renviron
 CMD R -e "options('shiny.port'=80,shiny.host='0.0.0.0');library(cognitiveInterview);cognitiveInterview::run_app()"
