@@ -20,7 +20,7 @@ app_server <- function(input, output, session) {
   # })
   # onBookmarked(updateQueryString)
 
-  # session$allowReconnect(TRUE)
+  session$allowReconnect(TRUE)
 
   ## Firebase authentication ---------------------------------------------------
   ## Persistence: 'local' means the session would persist even when window is closed
