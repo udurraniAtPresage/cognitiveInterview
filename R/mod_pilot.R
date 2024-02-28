@@ -70,7 +70,9 @@ mod_pilot_server <- function(id, constructs_vec, subtitles,
                   status = "radiobuttonz",
                   size = size_of_btn,
                   selected = if (is.null(fs_data_one_pilot)) {character(0)} else {
-                    if (!fs_data_one_pilot[paste0(gsub("\\s", "_", x), "_p", element_num)] %in% c("present and positive", "present but negative")){
+                    if (!fs_data_one_pilot[paste0(gsub("\\s", "_", x), "_p", element_num)] %in% c("present and positive",
+                                                                                                  "present but negative",
+                                                                                                  "1", "2", "3", "4")){
                       character(0)
                       } else {
                         fs_data_one_pilot[paste0(gsub("\\s", "_", x), "_p", element_num)]

@@ -95,7 +95,7 @@ mod_stu_interview_server <- function(id, constructs_vec, subtitles,
         mod_form_server(
           "stu_interview", constructs_vec, subtitles,
           choice_names = c("1", "2", "3", "4"),
-          choice_values = c(1, 2, 3, 4),
+          choice_values = c("1", "2", "3", "4"),
           event_name = paste0("eoi_stu_", input$event_select),
           PROJECT_NAME, accessToken, Day,
           SME, Instructor, pilot_vec, size_of_btn = "sm", se = FALSE, full_workbook, fs_data_event
