@@ -77,10 +77,10 @@ app_ui <- function(request) {
         shiny::uiOutput("day_page")
       ),
 
-      nav_panel(
-        title = "Saved Data",
-
-      ),
+      # nav_panel(
+      #   title = "Saved Data",
+      #
+      # ),
 
       nav_spacer(),
 
