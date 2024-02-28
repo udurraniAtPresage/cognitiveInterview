@@ -23,7 +23,7 @@ mod_form_ui <- function(id) {
 mod_form_server <- function(id, constructs_vec, subtitles,
                             choice_names, choice_values, event_name,
                             PROJECT_NAME, accessToken, Day,
-                            SME, Instructor, pilot_vec, size_of_btn, se, full_workbook) {
+                            SME, Instructor, pilot_vec, size_of_btn, se, full_workbook, fs_data_event) {
 
 
   moduleServer(
@@ -41,12 +41,14 @@ mod_form_server <- function(id, constructs_vec, subtitles,
           textAreaInput(
             inputId = ns(paste0(sim_event(), "_eventStart")),
             label = "Event Start",
-            placeholder = "Event started at ..."
+            placeholder = "Event started at ...",
+            value = if (is.null(fs_data_event)) {""} else {fs_data_event["Event_Start"]}
           ),
           textAreaInput(
             inputId = ns(paste0(sim_event(), "_eventEnd")),
             label = "Event End",
             placeholder = "Event ended at ...",
+            value = if (is.null(fs_data_event)) {""} else {fs_data_event["Event_End"]}
           )
         )
       } else{
@@ -89,16 +91,25 @@ mod_form_server <- function(id, constructs_vec, subtitles,
               )
             ),
             placeholder = "Add your notes here.",
+            value = if (is.null(fs_data_event)) {""} else {fs_data_event["Notes"]},
             width = "1200px", height = "200px"
           ),
           br(),
 
           layout_columns(
-            selectInput(ns("FM1"), label = paste0(pilot_vec()[1], " is:"), choices = c("PM", "PF")),
+            selectInput(ns("FM1"),
+                        label = paste0(pilot_vec()[1], " is:"),
+                        choices = c("PM", "PF"),
+                        selected = if (is.null(fs_data_event)) {NULL} else {fs_data_event["Pilot1_status"]}
+                        ),
             textOutput(ns("FM2"))
           ),
           layout_columns(
-            selectInput(ns("CF1"), label = "", choices = c("Captain", "First Officer")),
+            selectInput(ns("CF1"),
+                        label = "",
+                        choices = c("Captain", "First Officer"),
+                        selected = if (is.null(fs_data_event)) {NULL} else {fs_data_event["Pilot1_title"]}
+                        ),
             textOutput(ns("CF2"))
           ),
           layout_columns(
@@ -114,23 +125,46 @@ mod_form_server <- function(id, constructs_vec, subtitles,
       if (length(pilot_vec()) == 2){
 
 
+
+        fs_data_one_pilot1 <- reactive({
+          if (!is.null(fs_data_event)){
+            fs_data_event_filt <- fs_data_event |>
+              dplyr::select(name, contains("p1"))
+          } else {NULL}
+        })
+
+        fs_data_one_pilot2 <- reactive({
+          if (!is.null(fs_data_event)){
+            fs_data_event |>
+              dplyr::select(name, contains("p2"))
+          } else {NULL}
+        })
+
         pilot1_vals <- mod_pilot_server(
           id = gsub("\\s", "", paste0(sim_event(), "_pilot1")), constructs_vec, subtitles,
           choice_names, choice_values, event_name,
-          Day, Pilot = pilot_vec, element_num = 1, size_of_btn
+          Day, Pilot = pilot_vec, element_num = 1, size_of_btn, fs_data_one_pilot1()
         )
 
         pilot2_vals <- mod_pilot_server(
           id = gsub("\\s", "", paste0(sim_event(), "_pilot2")), constructs_vec, subtitles,
           choice_names, choice_values, event_name,
-          Day, Pilot = pilot_vec, element_num = 2, size_of_btn
+          Day, Pilot = pilot_vec, element_num = 2, size_of_btn, fs_data_one_pilot2()
         )
 
       } else {
+
+        fs_data_one_pilot1 <- reactive({
+          if (!is.null(fs_data_event)){
+            fs_data_event |>
+              dplyr::select(name, contains("p1"))
+          } else {NULL}
+        })
+
         pilot1_vals <- mod_pilot_server(
           id = gsub("\\s", "", paste0(sim_event(), "_pilot1")), constructs_vec, subtitles,
           choice_names, choice_values, event_name,
-          Day, Pilot = pilot_vec, element_num = 1, size_of_btn
+          Day, Pilot = pilot_vec, element_num = 1, size_of_btn, fs_data_one_pilot1()
         )
       }
       pilot_2_FM <- reactive({
@@ -442,3 +476,185 @@ mod_form_server <- function(id, constructs_vec, subtitles,
     }
   )
 }
+
+
+
+
+
+
+
+# Demo---------------------------------------------
+# mod_form_demo <- function() {
+#   # Global------------------------------
+#   library(shiny)
+#   library(shinyWidgets)
+#   library(shinyjs)
+#   library(bslib)
+#   library(firebase)
+#   library(jsonlite)
+#   library(httr)
+#   library(purrr)
+#   library(tidyr)
+#   library(dplyr)
+#   library(openxlsx)
+#
+#   source("R/functions.R")
+#   source("R/mod_handwriting.R")
+#   source("R/mod_pilot.R")
+#
+#
+#   PROJECT_NAME = "brpa-dev"
+#
+#   sign.in <- function(email, password, api_key) {
+#     r <- httr::POST(paste0("https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=", api_key),
+#                     httr::add_headers("Content-Type" = "application/json"),
+#                     body = jsonlite::toJSON(list(email = email, password = password, returnSecureToken = TRUE), auto_unbox = TRUE)
+#     )
+#     return(httr::content(r))
+#   }
+#
+#   ure <- sign.in("ag@oqfmaxhjb.ure", Sys.getenv("PASS"), Sys.getenv("FIREBASE_API_KEY"))
+#
+#
+#   # emailu <- ure$email
+#
+#   constructs_vec <- c(
+#     "Functional", "Hierarchical", "Task Empirical",
+#     "Critical", "Affective", "Anticipatory",
+#     "Compensatory", "Relational", "Environmental"
+#   )
+#
+#   subtitles <- c(
+#     Functional = "Instrument and Equipment Knowledge",
+#     Hierarchical = "Knowing the Procedures            ",
+#     "Task Empirical" = "Knowing the Limits                ",
+#     Relational = "Keeping Each Other Safe           ",
+#     Environmental = "Company Support for Safety        ",
+#     Anticipatory = "Seeing the Threat                 ",
+#     Compensatory = "Adjusting to the Threat           ",
+#     Affective = "Gut Feel for Threats              ",
+#     Critical = "Relying on Experience             "
+#   )
+#
+#
+#   # event_name <- "V1 cut"
+#   # Day <- "Day1"
+#   #
+#   # SME <- "Umair"
+#   # Instructor <- "Umair"
+#   # Pilot1 <- "Umair"
+#   # Pilot2 <- "John"
+#   # pilot_vec <- c(Pilot1, Pilot2)
+#   #
+#   # PROJECT_NAME <- Sys.getenv("FIREBASE_PROJECT_ID")
+#
+#
+#
+#   # UI----------------------------------
+#   ui <- page_fluid(
+#     tags$head(
+#       tags$script(type = "text/javascript", src = "inst/app/www/scrollPage.js"),
+#       tags$button(id = "scroll-to-top-button",
+#                   onclick = "topFunction()",
+#                   "⇧"),
+#       tags$link(rel = "stylesheet", type = "text/css", href = "inst/app/www/styles.css"),
+#       tags$script(src = "inst/app/www/reset.js"),
+#       tags$script(src = "inst/app/www/handwriting.js"),
+#       tags$script(src = "inst/app/www/handwriting.canvas.js"),
+#       tags$script(src = "inst/app/www/handwriting_for_shiny3.js"),
+#       tags$script(src = "inst/app/www/change_color.js"),
+#       useFirebase(), # import dependencies
+#       useShinyjs()
+#     ),
+#     theme = bs_theme(
+#       version = 5,
+#       bg = "#1a1a1a",
+#       fg = "#ffffff",
+#       primary = "#0072bc",
+#       success = "#39b54a",
+#       danger = "#d7df23",
+#       warning = "#8dc63f",
+#       base_font = font_google("Libre Franklin"),
+#       preset = "shiny",
+#       heading_font = font_google("Libre Franklin")
+#     ),
+#
+#
+#     accordion(
+#       accordion_panel(title = "First", mod_form_ui("form1")),
+#       accordion_panel(title = "Second", mod_form_ui("form2"))
+#     )
+#
+#
+#
+#   )
+#
+#
+#   # Server-------------------------------------------------------
+#   server <- server <- function(input, output, session) {
+#     # bs_themer()
+#     # constructs_vec <-  c("Fun", "Hie", "Tas",
+#     #                      "Cri", "Aff", "Ant",
+#     #                      "Com", "Rel", "Env")
+#     #
+#     # subtitles <- c("Fun"       = "sub",
+#     #                "Hie"     = "sub",
+#     #                "Tas"       = "sub",
+#     #                "Cri"    = "sub",
+#     #                "Aff"     = "sub",
+#     #                "Ant"     = "sub",
+#     #                "Com"        = "sub",
+#     #                "Rel"         = "sub",
+#     #                "Env"      = "sub")
+#     #
+#
+#
+#
+#     accessTokenu <- reactive(ure$idToken)
+#
+#
+#     SME <- reactive("Martin Smith")
+#     Instructor <- reactive("Charles Xavier")
+#     Pilot <- reactive(c("XC34B", "P325X"))
+#     Day <- reactive("Day1")
+#     event_name <- reactive("v1_cut")
+#
+#
+#     fs_data_event <- reactive({
+#       get_ci_data_for_a_day(
+#         PROJECT_NAME,
+#         accessToken = accessTokenu(),
+#         Day = Day(),
+#         SME = SME(),
+#         Instructor = Instructor(),
+#         pilot_vec = Pilot()
+#       ) |>
+#         dplyr::filter(name == event_name())
+#     })
+#
+#
+#     # wb <- createWorkbook()
+#
+#     full_workbook <- reactiveVal(value = createWorkbook())
+#
+#     observe({
+#     mod_form_server(
+#       "form1", constructs_vec, subtitles,
+#       choice_names = c("-", "+"), choice_values = c("present but negative", "present and positive"),
+#       event_name = event_name(),
+#       PROJECT_NAME, accessTokenu, Day(),
+#       SME, Instructor, pilot_vec = Pilot, size_of_btn="sm", se = TRUE, full_workbook, fs_data_event()
+#     )
+# })
+#
+#     # mod_form_server(
+#     #   "form2", constructs_vec, subtitles,
+#     #   choice_names = c("-", "+"), choice_values = c("present but negative", "present and positive"),
+#     #   event_name = event_name(),
+#     #   PROJECT_NAME, accessTokenu, Day(),
+#     #   SME, Instructor, pilot_vec = Pilot, size_of_btn="sm", se = TRUE, full_workbook, fs_data_event()
+#     # )
+#   }
+#
+#   shinyApp(ui, server)
+# }

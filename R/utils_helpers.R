@@ -82,12 +82,13 @@ instructor_pilots_name_inputs <- shiny::tagList(
     )
   ),
 
-  shiny::br(),
-  shiny::br(),
+  actionButton("generate", "Generate", class = "save-button"),
+
   shiny::br(),
   shiny::br(),
 
-  shiny::downloadButton("save_all", label = "Save all data", class = "save-button")
+
+  shiny::downloadButton("save_all", label = "Download all data", class = "download-button")
   # br(),
   # br(),
   # br()

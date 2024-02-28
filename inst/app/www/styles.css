@@ -49,6 +49,11 @@
   color: white;
 }
 
+.download-button {
+  background-color: #cce2f1; /* Primary color for save button */
+  color: black;
+}
+
 .grey-button {
   background-color: #808080; /* Primary color for save button */
   color: white;

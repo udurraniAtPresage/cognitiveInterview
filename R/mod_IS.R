@@ -24,7 +24,7 @@ mod_IS_ui <- function(id) {
 #' @noRd
 mod_IS_server <- function(id, constructs_vec, subtitles,
                           PROJECT_NAME, accessToken, Day,
-                          SME, Instructor, pilot_vec, event_info, full_workbook) {
+                          SME, Instructor, pilot_vec, event_info, full_workbook, isd_data) {
   moduleServer(
     id,
     function(input, output, session) {
@@ -52,6 +52,15 @@ mod_IS_server <- function(id, constructs_vec, subtitles,
               )
             )
 
+            if (!is.null(isd_data)){
+              fs_data_event <- isd_data |>
+                dplyr::mutate(name = sub("^isd_", "", name)) |>
+                dplyr::filter(name == event_name)
+            } else{
+              fs_data_event <- NULL
+            }
+
+
             mod_form_server(
               id = paste0("form_", event_name),
               constructs_vec,
@@ -65,7 +74,7 @@ mod_IS_server <- function(id, constructs_vec, subtitles,
               SME,
               Instructor,
               pilot_vec,
-              size_of_btn = "normal", se = FALSE, full_workbook
+              size_of_btn = "normal", se = FALSE, full_workbook, fs_data_event
             )
           })
 

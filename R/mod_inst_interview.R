@@ -23,7 +23,7 @@ mod_inst_interview_ui <- function(id) {
 #' @noRd
 mod_inst_interview_server <- function(id, constructs_vec, subtitles,
                                       PROJECT_NAME, accessToken, Day,
-                                      SME, Instructor, pilot_vec, selected_eoi, full_workbook) {
+                                      SME, Instructor, pilot_vec, selected_eoi, full_workbook, ins_data) {
   moduleServer(
     id,
     function(input, output, session) {
@@ -44,13 +44,22 @@ mod_inst_interview_server <- function(id, constructs_vec, subtitles,
 
       observe({
         req(selected_eoi())
+
+        if (!is.null(ins_data)){
+          fs_data_event <- ins_data |>
+            dplyr::mutate(name = sub("^eoi_inst_", "", name)) |>
+            dplyr::filter(name == selected_eoi())
+        } else{
+          fs_data_event <- NULL
+        }
+
         mod_form_server(
           "inst_interview", constructs_vec, subtitles,
           choice_names = c("1", "2", "3", "4"),
           choice_values = c(1, 2, 3, 4),
           event_name = paste0("eoi_inst_", selected_eoi()),
           PROJECT_NAME, accessToken, Day,
-          SME, Instructor, pilot_vec, size_of_btn = "sm", se = FALSE, full_workbook
+          SME, Instructor, pilot_vec, size_of_btn = "sm", se = FALSE, full_workbook, fs_data_event
         )
       })
 

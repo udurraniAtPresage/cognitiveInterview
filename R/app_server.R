@@ -11,6 +11,7 @@
 #' @import dplyr
 #' @import tidyr
 #' @import tibble
+#' @import waiter
 #' @noRd
 app_server <- function(input, output, session) {
 
@@ -141,16 +142,13 @@ app_server <- function(input, output, session) {
 
 
 
-
-
-
   # Create an empty workbook
-  wb <- createWorkbook()
+  # wb <- createWorkbook()
 
-  full_workbook <- reactiveVal(value = wb)
+  full_workbook <- reactiveVal(value = createWorkbook())
 
   ## Observe selected day input and then create UI for that day
-  observe({
+  observeEvent(input$generate, {
     ## Check if a day is selected
     if (!is.null(input$day) && input$day != "") {
       ## Render the day page
@@ -165,14 +163,60 @@ app_server <- function(input, output, session) {
       number <- as.numeric(gsub("[^0-9]", "", input$day))
       Day <- paste0("Day", number)
 
+      ## Data from firestore
+      fs_data <- get_ci_data_for_a_day(
+          PROJECT_NAME,
+          accessToken = user_token(),
+          Day = Day,
+          SME = SME(),
+          Instructor = Instructor(),
+          pilot_vec = c(Pilot1(), Pilot2())
+        )
 
-      # Get existing data from firestore
-      # data_for_one_day <- reactive({get_ci_data_for_a_day(PROJECT_NAME = PROJECT_NAME,
-      #                                          accessToken = user_token(),
-      #                                          Day = Day,
-      #                                          SME = SME(),
-      #                                          Instructor = Instructor(),
-      #                                          pilot_vec = c(Pilot1(), Pilot2()))})
+      if (!is.null(fs_data)){
+      all_events_data <- fs_data |>
+        filter(!grepl("isd|eoi", name))
+      } else {
+        all_events_data <- NULL
+      }
+
+      # if (is.null(all_events_data) | nrow(all_events_data) < 1){
+      #   all_events_data <- NULL
+      # }
+
+      if (!is.null(fs_data)){
+      isd_data <- fs_data |>
+        filter(grepl("isd", name))
+      } else {
+        isd_data <- NULL
+      }
+
+
+      # if (is.null(isd_data) | nrow(isd_data) < 1){
+      #   isd_data <- NULL
+      # }
+
+      if (!is.null(fs_data)){
+      stu_data <- fs_data |>
+        filter(grepl("eoi_stu", name))
+      } else {
+        stu_data <- NULL
+      }
+
+      # if (is.null(stu_data) | nrow(stu_data) < 1){
+      #   stu_data <- NULL
+      # }
+
+      if (!is.null(fs_data)){
+      ins_data <- fs_data |>
+        filter(grepl("eoi_inst", name))
+      } else {
+        ins_data <- NULL
+      }
+
+      # if (is.null(ins_data) | nrow(ins_data) < 1){
+      #   ins_data <- NULL
+      # }
 
 
       ## All events server
@@ -180,7 +224,7 @@ app_server <- function(input, output, session) {
                                           constructs_vec, subtitles,
                                           PROJECT_NAME, user_token, Day,
                                           SME = SME, Instructor = Instructor,
-                                          pilot_vec = pilotz_vec, full_workbook)
+                                          pilot_vec = pilotz_vec, full_workbook, all_events_data)
 
 
 
@@ -189,7 +233,7 @@ app_server <- function(input, output, session) {
                     PROJECT_NAME, user_token, Day,
                     SME = SME, Instructor = Instructor,
                     pilot_vec = pilotz_vec,
-                    event_info = event_info, full_workbook)
+                    event_info = event_info, full_workbook, isd_data)
 
 
       ## Student Interview
@@ -198,7 +242,7 @@ app_server <- function(input, output, session) {
                                                PROJECT_NAME, user_token, Day,
                                                SME = SME, Instructor = Instructor,
                                                pilot_vec = pilotz_vec,
-                                               event_info = event_info, full_workbook)
+                                               event_info = event_info, full_workbook, stu_data)
 
 
       ## Instructor Interview
@@ -207,7 +251,7 @@ app_server <- function(input, output, session) {
                                 PROJECT_NAME, user_token, Day,
                                 SME = SME, Instructor = Instructor,
                                 pilot_vec = pilotz_vec,
-                                selected_eoi = selected_eoi, full_workbook)
+                                selected_eoi = selected_eoi, full_workbook, ins_data)
 
 
       # if (class(full_workbook()) == "Workbook"){

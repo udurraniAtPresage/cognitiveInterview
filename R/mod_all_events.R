@@ -34,7 +34,7 @@ mod_all_events_ui <- function(id) {
 #' @noRd
 mod_all_events_server <- function(id, constructs_vec, subtitles,
                                   PROJECT_NAME, accessToken, Day,
-                                  SME, Instructor, pilot_vec, full_workbook) {
+                                  SME, Instructor, pilot_vec, full_workbook, all_events_data) {
   moduleServer(
     id,
     function(input, output, session) {
@@ -49,6 +49,7 @@ mod_all_events_server <- function(id, constructs_vec, subtitles,
       observeEvent(input$collapse_all, {
         accordion_panel_close(id = "accord_all_events", values = TRUE)
       })
+
 
 
 
@@ -86,7 +87,7 @@ mod_all_events_server <- function(id, constructs_vec, subtitles,
       }, ignoreInit = TRUE)
 
 
-      eventz <- reactiveVal()
+      # eventz <- reactiveVal()
 
 
       observeEvent(input$create_event, {
@@ -113,18 +114,18 @@ mod_all_events_server <- function(id, constructs_vec, subtitles,
           choice_names = c("-", "+"), choice_values = c("present but negative", "present and positive"),
           event_name = new_event_name,
           PROJECT_NAME, accessToken, Day,
-          SME, Instructor, pilot_vec, size_of_btn = "normal", se = TRUE, full_workbook
+          SME, Instructor, pilot_vec, size_of_btn = "normal", se = TRUE, full_workbook, fs_data_event = NULL
         )
 
         all_events$namez <- c(all_events$namez, input$event_name)
         # all_events$event_data <- c(all_events$event_data, this_event_data())
 
-        eventz(
-          c(
-            eventz(),
-            list(list(name = new_event_name, id = form_id))
-          )
-        )
+        # eventz(
+        #   c(
+        #     eventz(),
+        #     list(list(name = new_event_name, id = form_id))
+        #   )
+        # )
       }, ignoreInit = TRUE)
 
 
@@ -153,7 +154,46 @@ mod_all_events_server <- function(id, constructs_vec, subtitles,
       #
       # setBookmarkExclude(c("add", "create_event", "event_name", "accord_all_events"))
 
+      # observe({
 
+        if (!is.null(all_events_data)){
+
+          # for (new_event_namefs in unique(all_events_data$name)){
+          lapply(unique(all_events_data$name), function(new_event_namefs) {
+
+            form_id <- paste0(gsub("\\s", "", new_event_namefs), "_form")
+
+            print(form_id)
+
+            accordion_panel_insert(id = "accord_all_events",
+                                   panel = accordion_panel(title = new_event_namefs,
+                                                           mod_form_ui(ns(form_id))))
+
+            accordion_panel_close(id = "accord_all_events", values = TRUE)
+
+
+            fs_data_event <- all_events_data |>
+              dplyr::filter(name == new_event_namefs)
+
+            if (nrow(fs_data_event) < 1){
+              fs_data_event <- NULL
+            }
+
+            mod_form_server(
+              form_id, constructs_vec, subtitles,
+              choice_names = c("-", "+"), choice_values = c("present but negative", "present and positive"),
+              event_name = new_event_namefs,
+              PROJECT_NAME, accessToken, Day,
+              SME, Instructor, pilot_vec, size_of_btn = "normal", se = TRUE, full_workbook,
+              fs_data_event = fs_data_event
+            )
+
+            all_events$namez <- c(all_events$namez, new_event_namefs)
+          }
+          )
+        }
+
+      # })
 
       output$collapse_all_events_button <- renderUI({
 

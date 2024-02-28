@@ -7,6 +7,7 @@
 #' @noRd
 #'
 #' @importFrom shiny NS tagList uiOutput br reactive renderUI strong span h4 radioButtons observeEvent
+#' @importFrom shinyjs disable
 mod_stu_interview_ui <- function(id) {
   ns <- NS(id)
 
@@ -22,7 +23,7 @@ mod_stu_interview_ui <- function(id) {
 #' @noRd
 mod_stu_interview_server <- function(id, constructs_vec, subtitles,
                                      PROJECT_NAME, accessToken, Day,
-                                     SME, Instructor, pilot_vec, event_info, full_workbook) {
+                                     SME, Instructor, pilot_vec, event_info, full_workbook, stu_data) {
   moduleServer(
     id,
     function(input, output, session) {
@@ -43,29 +44,61 @@ mod_stu_interview_server <- function(id, constructs_vec, subtitles,
             }
           )
 
-          radioButtons(
-            inputId = ns("event_select"),
-            label = h4("Select event of interest:"),
-            choiceNames = choices_highlighted,
-            choiceValues = event_names(),
-            selected = character(0),
-            width = 500
-          )
+          if (!is.null(stu_data)) {
+
+            radioButtons(
+              inputId = ns("event_select"),
+              label = h4("Select event of interest:"),
+              choiceNames = choices_highlighted,
+              choiceValues = event_names(),
+              selected = if (is.null(stu_data)) {
+                character(0)
+                } else if (length(unique(stu_data$name)) > 1){
+                  character(0)
+                } else {
+                this_event_name <- sub("^eoi_stu_", "", stu_data$name)
+                this_event_name
+              },
+              width = 500
+            )
+
+            # shinyjs::disable("event_of_interest_ui")
+
+          } else {
+
+            radioButtons(
+              inputId = ns("event_select"),
+              label = h4("Select event of interest:"),
+              choiceNames = choices_highlighted,
+              choiceValues = event_names(),
+              selected = character(0),
+              width = 500
+            )
+          }
         } else {
           h4("Please create at least 1 event on the 'All Events' page.")
         }
       })
 
-
-
       observeEvent(input$event_select, {
+
+        if (!is.null(stu_data)){
+          fs_data_event <- stu_data |>
+            dplyr::mutate(name = sub("^eoi_stu_", "", name)) |>
+            dplyr::filter(name == input$event_select)
+        } else{
+          fs_data_event <- NULL
+        }
+
+        # print(fs_data_event)
+
         mod_form_server(
           "stu_interview", constructs_vec, subtitles,
           choice_names = c("1", "2", "3", "4"),
           choice_values = c(1, 2, 3, 4),
           event_name = paste0("eoi_stu_", input$event_select),
           PROJECT_NAME, accessToken, Day,
-          SME, Instructor, pilot_vec, size_of_btn = "sm", se = FALSE, full_workbook
+          SME, Instructor, pilot_vec, size_of_btn = "sm", se = FALSE, full_workbook, fs_data_event
         )
       })
 

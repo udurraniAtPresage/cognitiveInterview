@@ -6,6 +6,7 @@
 #' @import bslib
 #' @import shinyjs
 #' @import firebase
+#' @import waiter
 #' @noRd
 #'
 # Header elements and Theme
@@ -66,10 +67,22 @@ app_ui <- function(request) {
       ),
 
 
-      conditionalPanel(
-        condition = "input.day !== ''",
+      # conditionalPanel(
+      #   condition = "input.day !== ''",
+      #   shiny::uiOutput("day_page")
+      # ),
+
+      nav_panel(
+        title = "Data Collection",
         shiny::uiOutput("day_page")
       ),
+
+      nav_panel(
+        title = "Saved Data",
+
+      ),
+
+      nav_spacer(),
 
       nav_item(
         uiOutput("sign_out_button")
@@ -100,7 +113,8 @@ golem_add_external_resources <- function() {
     # ),
     # Add here other external resources
     # for example, you can add shinyalert::useShinyalert()
-    tags$script(type = "text/javascript", src = "www/scrollPage.js"),
+    # tags$script(type = "text/javascript", src = "www/scrollPage.js"),
+    tags$script(type = "text/javascript", src = "www/scrollPageNavbar.js"),
     tags$button(id = "scroll-to-top-button",
                 onclick = "topFunction()",
                 "⇧"),
@@ -110,7 +124,8 @@ golem_add_external_resources <- function() {
     tags$script(src = "www/handwriting.canvas.js"),
     tags$script(src = "www/handwriting_for_shiny3.js"),
     tags$script(src = "www/change_color.js"),
-    useFirebase(), # import dependencies
-    useShinyjs(),
+    firebase::useFirebase(), # import dependencies
+    shinyjs::useShinyjs(),
+    waiter::autoWaiter()
   )
 }
