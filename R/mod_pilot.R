@@ -110,8 +110,10 @@ mod_pilot_server <- function(id, constructs_vec, subtitles,
           showModal(
             modalDialog(
               tagList(
+                actionButton(ns(paste0(sim_event(), "_pressing1_", gsub("\\s", "", x))),
+                             label = "Done", class = "save-button"),
                 mod_handwriting_ui(ns(paste0(sim_event(), "_handwriting_", gsub("\\s", "", x)))),
-                actionButton(ns(paste0(sim_event(), "_pressing_", gsub("\\s", "", x))),
+                actionButton(ns(paste0(sim_event(), "_pressing2_", gsub("\\s", "", x))),
                              label = "Done", class = "save-button")
               ),
               title = paste0("Handwrite your comments on ", x, " Awareness"),
@@ -123,7 +125,7 @@ mod_pilot_server <- function(id, constructs_vec, subtitles,
 
           text_output <- mod_handwriting_server(paste0(sim_event(), "_handwriting_", gsub("\\s", "", x)), run)
 
-          observeEvent(input[[paste0(sim_event(), "_pressing_", gsub("\\s", "", x))]], {
+          observeEvent(input[[paste0(sim_event(), "_pressing1_", gsub("\\s", "", x))]] | input[[paste0(sim_event(), "_pressing2_", gsub("\\s", "", x))]], {
             removeModal()
             updateTextAreaInput(session, paste0(sim_event(), "_text_", gsub("\\s", "", x)), value = text_output())
           })

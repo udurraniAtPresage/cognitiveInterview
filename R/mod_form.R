@@ -209,8 +209,10 @@ mod_form_server <- function(id, constructs_vec, subtitles,
         showModal(
           modalDialog(
             tagList(
+              actionButton(ns(paste0(sim_event(), "_pressing1")),
+                           label = "Done", class = "save-button"),
               mod_handwriting_ui(ns(paste0(sim_event(), "_handwriting"))),
-              actionButton(ns(paste0(sim_event(), "_pressing")),
+              actionButton(ns(paste0(sim_event(), "_pressing2")),
                            label = "Done", class = "save-button")
             ),
             title = paste0("Handwrite your comments"),
@@ -222,7 +224,7 @@ mod_form_server <- function(id, constructs_vec, subtitles,
 
         text_outputt <- mod_handwriting_server(paste0(sim_event(), "_handwriting"), run_comments)
 
-        observeEvent(input[[paste0(sim_event(), "_pressing")]], {
+        observeEvent(input[[paste0(sim_event(), "_pressing1")]] | input[[paste0(sim_event(), "_pressing2")]], {
           removeModal()
           updateTextAreaInput(session, paste0(sim_event(), "_comments"), value = text_outputt())
         })
