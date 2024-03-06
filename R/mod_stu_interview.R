@@ -23,7 +23,9 @@ mod_stu_interview_ui <- function(id) {
 #' @noRd
 mod_stu_interview_server <- function(id, constructs_vec, subtitles,
                                      PROJECT_NAME, accessToken, Day,
-                                     SME, Instructor, pilot_vec, event_info, full_workbook, stu_data) {
+                                     SME, Instructor, pilot_vec,
+                                     aircraft,
+                                     event_info, full_workbook, stu_data) {
   moduleServer(
     id,
     function(input, output, session) {
@@ -98,7 +100,9 @@ mod_stu_interview_server <- function(id, constructs_vec, subtitles,
           choice_values = c("1", "2", "3", "4"),
           event_name = paste0("eoi_stu_", input$event_select),
           PROJECT_NAME, accessToken, Day,
-          SME, Instructor, pilot_vec, size_of_btn = "sm", se = FALSE, full_workbook, fs_data_event
+          SME, Instructor, pilot_vec,
+          aircraft,
+          size_of_btn = "sm", se = FALSE, full_workbook, fs_data_event
         )
       })
 

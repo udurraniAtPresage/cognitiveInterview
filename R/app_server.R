@@ -120,6 +120,7 @@ app_server <- function(input, output, session) {
   Instructor <- reactive(input$iname)
   Pilot1 <- reactive(input$pname1)
   Pilot2 <- reactive(input$pname2)
+  aircraft <- reactive(input$aircraft)
 
 
 
@@ -224,7 +225,9 @@ app_server <- function(input, output, session) {
                                           constructs_vec, subtitles,
                                           PROJECT_NAME, user_token, Day,
                                           SME = SME, Instructor = Instructor,
-                                          pilot_vec = pilotz_vec, full_workbook, all_events_data)
+                                          pilot_vec = pilotz_vec,
+                                          aircraft = aircraft,
+                                          full_workbook, all_events_data)
 
 
 
@@ -233,6 +236,7 @@ app_server <- function(input, output, session) {
                     PROJECT_NAME, user_token, Day,
                     SME = SME, Instructor = Instructor,
                     pilot_vec = pilotz_vec,
+                    aircraft = aircraft,
                     event_info = event_info, full_workbook, isd_data)
 
 
@@ -242,6 +246,7 @@ app_server <- function(input, output, session) {
                                                PROJECT_NAME, user_token, Day,
                                                SME = SME, Instructor = Instructor,
                                                pilot_vec = pilotz_vec,
+                                               aircraft = aircraft,
                                                event_info = event_info, full_workbook, stu_data)
 
 
@@ -251,6 +256,7 @@ app_server <- function(input, output, session) {
                                 PROJECT_NAME, user_token, Day,
                                 SME = SME, Instructor = Instructor,
                                 pilot_vec = pilotz_vec,
+                                aircraft = aircraft,
                                 selected_eoi = selected_eoi, full_workbook, ins_data)
 
 

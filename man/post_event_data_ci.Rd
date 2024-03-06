@@ -12,6 +12,7 @@ post_event_data_ci(
   Instructor,
   Pilot1,
   Pilot2,
+  aircraft,
   pilot1_status,
   pilot1_title,
   pilot2_status,

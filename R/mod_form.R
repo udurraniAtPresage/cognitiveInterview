@@ -23,7 +23,9 @@ mod_form_ui <- function(id) {
 mod_form_server <- function(id, constructs_vec, subtitles,
                             choice_names, choice_values, event_name,
                             PROJECT_NAME, accessToken, Day,
-                            SME, Instructor, pilot_vec, size_of_btn, se, full_workbook, fs_data_event) {
+                            SME, Instructor, pilot_vec,
+                            aircraft,
+                            size_of_btn, se, full_workbook, fs_data_event) {
 
 
   moduleServer(
@@ -252,6 +254,7 @@ mod_form_server <- function(id, constructs_vec, subtitles,
           ### Request
           request <- post_event_data_ci(PROJECT_NAME, accessToken(), Day,
                                         SME(), Instructor(), Pilot1, Pilot2,
+                                        aircraft(),
                                         pilot1_status = input$FM1, pilot1_title = input$CF1,
                                         pilot2_status = pilot_2_FM(), pilot2_title = pilot_2_CF(),
                                         event_name = event_name,
@@ -277,6 +280,7 @@ mod_form_server <- function(id, constructs_vec, subtitles,
 
 
           this_event_data <- dplyr::tibble(
+            aircraft = rep(aircraft(), 18),
             event_name = rep(event_name, 18),
             start = if(se == TRUE) {rep(input[[paste0(sim_event(), "_eventStart")]], 18)} else {NULL},
             end   = if(se == TRUE) {rep(input[[paste0(sim_event(), "_eventEnd")]],   18)} else {NULL},
@@ -321,6 +325,7 @@ mod_form_server <- function(id, constructs_vec, subtitles,
           ### Request
           request <- post_event_data_ci(PROJECT_NAME, accessToken(), Day,
                                         SME(), Instructor(), Pilot1, Pilot2 = NULL,
+                                        aircraft(),
                                         pilot1_status = input$FM1, pilot1_title = input$CF1,
                                         pilot2_status = NULL, pilot2_title = NULL,
                                         event_name = event_name,
@@ -339,6 +344,7 @@ mod_form_server <- function(id, constructs_vec, subtitles,
           notes <- input[[textt_area_id]]
 
           this_event_data <- dplyr::tibble(
+            aircraft = rep(aircraft(), 9),
             event_name = rep(event_name, 9),
             start = if(se == TRUE) {rep(input[[paste0(sim_event(), "_eventStart")]], 9)} else {NULL},
             end   = if(se == TRUE) {rep(input[[paste0(sim_event(), "_eventEnd")]],   9)} else {NULL},
@@ -413,6 +419,7 @@ mod_form_server <- function(id, constructs_vec, subtitles,
             ### Request
             request <- post_event_data_ci(PROJECT_NAME, isolate(accessToken()), Day,
                                           isolate(SME()), isolate(Instructor()), Pilot1, Pilot2,
+                                          aircraft(),
                                           pilot1_status = isolate(input$FM1), pilot1_title = isolate(input$CF1),
                                           pilot2_status = isolate(pilot_2_FM()), pilot2_title = isolate(pilot_2_CF()),
                                           event_name = isolate(event_name),
@@ -435,6 +442,7 @@ mod_form_server <- function(id, constructs_vec, subtitles,
             ### Request
             request <- post_event_data_ci(PROJECT_NAME, isolate(accessToken()), Day,
                                           isolate(SME()), isolate(Instructor()), Pilot1, Pilot2 = NULL,
+                                          aircraft(),
                                           pilot1_status = isolate(input$FM1), pilot1_title = isolate(input$CF1),
                                           pilot2_status = NULL, pilot2_title = NULL,
                                           event_name = isolate(event_name),

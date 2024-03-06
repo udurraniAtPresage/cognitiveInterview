@@ -34,7 +34,9 @@ mod_all_events_ui <- function(id) {
 #' @noRd
 mod_all_events_server <- function(id, constructs_vec, subtitles,
                                   PROJECT_NAME, accessToken, Day,
-                                  SME, Instructor, pilot_vec, full_workbook, all_events_data) {
+                                  SME, Instructor, pilot_vec,
+                                  aircraft,
+                                  full_workbook, all_events_data) {
   moduleServer(
     id,
     function(input, output, session) {
@@ -114,7 +116,8 @@ mod_all_events_server <- function(id, constructs_vec, subtitles,
           choice_names = c("-", "+"), choice_values = c("present but negative", "present and positive"),
           event_name = new_event_name,
           PROJECT_NAME, accessToken, Day,
-          SME, Instructor, pilot_vec, size_of_btn = "normal", se = TRUE, full_workbook, fs_data_event = NULL
+          SME, Instructor, pilot_vec, aircraft,
+          size_of_btn = "normal", se = TRUE, full_workbook, fs_data_event = NULL
         )
 
         all_events$namez <- c(all_events$namez, input$event_name)
@@ -184,7 +187,9 @@ mod_all_events_server <- function(id, constructs_vec, subtitles,
               choice_names = c("-", "+"), choice_values = c("present but negative", "present and positive"),
               event_name = new_event_namefs,
               PROJECT_NAME, accessToken, Day,
-              SME, Instructor, pilot_vec, size_of_btn = "normal", se = TRUE, full_workbook,
+              SME, Instructor, pilot_vec,
+              aircraft,
+              size_of_btn = "normal", se = TRUE, full_workbook,
               fs_data_event = fs_data_event
             )
 

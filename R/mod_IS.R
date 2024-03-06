@@ -24,7 +24,9 @@ mod_IS_ui <- function(id) {
 #' @noRd
 mod_IS_server <- function(id, constructs_vec, subtitles,
                           PROJECT_NAME, accessToken, Day,
-                          SME, Instructor, pilot_vec, event_info, full_workbook, isd_data) {
+                          SME, Instructor, pilot_vec,
+                          aircraft,
+                          event_info, full_workbook, isd_data) {
   moduleServer(
     id,
     function(input, output, session) {
@@ -74,6 +76,7 @@ mod_IS_server <- function(id, constructs_vec, subtitles,
               SME,
               Instructor,
               pilot_vec,
+              aircraft,
               size_of_btn = "normal", se = FALSE, full_workbook, fs_data_event
             )
           })

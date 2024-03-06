@@ -72,6 +72,12 @@ instructor_pilots_name_inputs <- shiny::tagList(
   #   value = ""
   # ),
 
+  shiny::textInput(
+    inputId = "aircraft",
+    label = "Aircraft type:",
+    value = ""
+  ),
+
   shiny::selectizeInput(
     inputId = "day",
     label = HTML("Select Day: <span style='color:red'>*</span>"),
