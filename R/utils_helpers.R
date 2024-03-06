@@ -74,7 +74,7 @@ instructor_pilots_name_inputs <- shiny::tagList(
 
   shiny::textInput(
     inputId = "aircraft",
-    label = "Aircraft type:",
+    label = shiny::HTML("Aircraft type: <span style='color:red'>*</span>"),
     value = ""
   ),
 
