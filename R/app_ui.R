@@ -61,7 +61,8 @@ app_ui <- function(request) {
       ),
 
       sidebar = sidebar(
-        firebase::reqSignin(instructor_pilots_name_inputs),
+        # firebase::reqSignin(instructor_pilots_name_inputs),
+        instructor_pilots_name_inputs,
         br(), br(), br(),
         width = 300
       ),

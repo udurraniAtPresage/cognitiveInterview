@@ -27,22 +27,22 @@ app_server <- function(input, output, session) {
   ## Persistence: 'local' means the session would persist even when window is closed
   ### That means a user will remain signed in even when the app window is closed
   ### Only email and gmail are enabled.
-  f <- FirebaseUI$new(
-    persistence = "local"
-  )$set_providers(
-    email = TRUE,
-    google = TRUE)$
-    launch()
-
-
-  ## Sign in
-  user <- reactive({f$get_signed_in()})
-
-  ## Get the email and access token of the signed-in user (for access to Cloud Firestore database)
-  ### There is no client library for Cloud Firestore. So, this app uses REST API
-  ### Using the REST API requires access token
-  this_email <- reactive({user()$response$email})
-  user_token <- reactive({user()$response$stsTokenManage$accessToken})
+  # f <- FirebaseUI$new(
+  #   persistence = "local"
+  # )$set_providers(
+  #   email = TRUE,
+  #   google = TRUE)$
+  #   launch()
+  #
+  #
+  # ## Sign in
+  # user <- reactive({f$get_signed_in()})
+  #
+  # ## Get the email and access token of the signed-in user (for access to Cloud Firestore database)
+  # ### There is no client library for Cloud Firestore. So, this app uses REST API
+  # ### Using the REST API requires access token
+  # this_email <- reactive({user()$response$email})
+  # user_token <- reactive({user()$response$stsTokenManage$accessToken})
 
 
   # ui_secret (defined in user interface) is shown after signing in
@@ -55,17 +55,23 @@ app_server <- function(input, output, session) {
 
   # Sign out ----------------------------------------------------------------
   ## Button for signing out
-  output$sign_out_button <- shiny::renderUI({
-    f$req_sign_in()
-    actionButton("signout", "Sign out", class = "save-button")
-  })
+  # output$sign_out_button <- shiny::renderUI({
+  #   f$req_sign_in()
+  #   actionButton("signout", "Sign out", class = "save-button")
+  # })
+  #
+  # ## User signs out when the button with ID "signout" is clicked
+  # observeEvent(input$signout, {
+  #   f$sign_out()
+  #   f$launch()
+  # })
 
-  ## User signs out when the button with ID "signout" is clicked
-  observeEvent(input$signout, {
-    f$sign_out()
-    f$launch()
-  })
 
+  user_token <- reactive({
+    umair <- sign.in("udurrani@test.com", Sys.getenv("PASS"), Sys.getenv("FIREBASE_API_KEY"))
+    umair$idToken
+
+  })
 
   # observe({
   #   req(input$numpilots)

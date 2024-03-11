@@ -9,6 +9,15 @@
 #       nav_panel(title = "Instructor Interview", mod_part_C_ui(paste0("part_C_", number)))
 #     )
 # }
+
+sign.in <- function(email, password, api_key) {
+  r <- httr::POST(paste0("https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=", api_key),
+                  httr::add_headers("Content-Type" = "application/json"),
+                  body = jsonlite::toJSON(list(email = email, password = password, returnSecureToken = TRUE),auto_unbox=TRUE))
+  return(httr::content(r))
+}
+
+
 create_day_page <- function(x) {
   number <- as.numeric(gsub("[^0-9]", "", x))
   navset_card_pill(
