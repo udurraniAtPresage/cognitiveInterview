@@ -42,6 +42,8 @@ post_event_data_ci(
 
 \item{Pilot2}{Character. Name of pilot separated by space.}
 
+\item{aircraft}{Aircraft Type.}
+
 \item{pilot1_status}{Character. PF or PM.}
 
 \item{pilot1_title}{Character. Captain or First Officer.}

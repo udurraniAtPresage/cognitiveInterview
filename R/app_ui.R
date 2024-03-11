@@ -107,7 +107,7 @@ golem_add_external_resources <- function() {
   )
 
   tags$head(
-    firebaseUIContainer(),
+    # firebaseUIContainer(),
     # bundle_resources(
     #   path = app_sys("app/www"),
     #   app_title = "cognitiveInterview"

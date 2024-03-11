@@ -278,6 +278,9 @@ app_server <- function(input, output, session) {
       paste0(SME(), "_", Instructor(), "_", pilotz_vec(), "_", input$day, ".xlsx")
     },
     content = function(file) {
+      if ("Sheet1" %in% full_workbook()$sheet_names){
+        removeWorksheet(full_workbook(), sheet = "Sheet1")
+      }
       saveWorkbook(full_workbook(), file, overwrite = TRUE)
     }
   )

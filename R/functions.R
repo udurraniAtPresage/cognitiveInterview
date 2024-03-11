@@ -10,6 +10,14 @@
 #     )
 # }
 
+#' Sign in
+#'
+#' @param email email of user.
+#' @param password password of user.
+#' @param api_key firebase api key.
+#'
+#' @return signed in user.
+#' @export
 sign.in <- function(email, password, api_key) {
   r <- httr::POST(paste0("https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=", api_key),
                   httr::add_headers("Content-Type" = "application/json"),
@@ -18,6 +26,12 @@ sign.in <- function(email, password, api_key) {
 }
 
 
+#' Create Day UI
+#'
+#' @param x Day.
+#'
+#' @return UI elements.
+#' @export
 create_day_page <- function(x) {
   number <- as.numeric(gsub("[^0-9]", "", x))
   navset_card_pill(
@@ -140,6 +154,7 @@ delete_data_on_firestore<- function(db_endpoint, auth_token) {
 #' @param Instructor Character. Name of Instructor.
 #' @param Pilot1 Character. Name of pilot separated by space.
 #' @param Pilot2 Character. Name of pilot separated by space.
+#' @param aircraft Aircraft Type.
 #' @param pilot1_status Character. PF or PM.
 #' @param pilot1_title Character. Captain or First Officer.
 #' @param pilot2_status Character. PF or PM.
