@@ -383,7 +383,7 @@ mod_form_server <- function(id, constructs_vec, subtitles,
         ### Provide notifications
         if (request$status_code %in% c(200L, 409L)) {
           showNotification(h4(paste0(event_name, " data submitted to database!")), type = "message")
-          shinyjs::html(id = paste0(sim_event(), "_submit_event"), html = "Update")
+          # shinyjs::html(id = paste0(sim_event(), "_submit_event"), html = "Update")
         } else {
           showNotification(h4("Something went wrong! Data NOT submitted"), type = "error")
         }
@@ -466,7 +466,7 @@ mod_form_server <- function(id, constructs_vec, subtitles,
             #   paste0(event_name, " data submitted to database!"),
             #   type = "info"
             # )
-            shinyjs::html(id = paste0(sim_event(), "_submit_event"), html = "Update")
+            # shinyjs::html(id = paste0(sim_event(), "_submit_event"), html = "Update")
           } else {
             # print(paste0(Sys.time(), "        ", request$status_code))
             # print(Day)
