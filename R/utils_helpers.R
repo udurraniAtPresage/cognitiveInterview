@@ -38,7 +38,7 @@ instructor_pilots_name_inputs <- shiny::tagList(
   shiny::selectizeInput(
     inputId = "smename",
     label = shiny::HTML("Name of Subject Matter Expert: <span style='color:red'>*</span>"),
-    choices = c("Daniel Marchesseault", "Jacques Mignault", "Mark Stow", "Martin Smith", "Michel Charette"),
+    choices = c("Bill Curtis", "Daniel Marchesseault", "Jacques Mignault", "Mark Stow", "Martin Smith", "Michel Charette"),
     options = list(
       placeholder = 'Select SME',
       onInitialize = I('function() { this.setValue(""); }')
@@ -81,7 +81,8 @@ instructor_pilots_name_inputs <- shiny::tagList(
   shiny::selectizeInput(
     inputId = "day",
     label = HTML("Select Day: <span style='color:red'>*</span>"),
-    choices = c("Day1", "Day2", "Day3", "Day4", "Day5", "Day6", "Day7"),
+    choices = c("Day1", "Day2", "Day3", "Day4", "Day5", "Day6", "Day7",
+                "Day8", "Day9", "Day10"),
     options = list(
       placeholder = 'Select day',
       onInitialize = I('function() { this.setValue(""); }')
