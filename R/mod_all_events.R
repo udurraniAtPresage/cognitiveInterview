@@ -98,7 +98,7 @@ mod_all_events_server <- function(id, constructs_vec, subtitles,
 
         removeModal()
 
-        new_event_name <- input$event_name
+        new_event_name <-  gsub("[^A-Za-z0-9 ]", "", input$event_name) #input$event_name
 
 
         form_id <- paste0(gsub("\\s", "", new_event_name), "_form")
@@ -120,15 +120,10 @@ mod_all_events_server <- function(id, constructs_vec, subtitles,
           size_of_btn = "normal", se = TRUE, full_workbook, fs_data_event = NULL
         )
 
-        all_events$namez <- c(all_events$namez, input$event_name)
-        # all_events$event_data <- c(all_events$event_data, this_event_data())
+        # all_events$namez <- c(all_events$namez, input$event_name)
+        all_events$namez <- c(all_events$namez, new_event_name)
 
-        # eventz(
-        #   c(
-        #     eventz(),
-        #     list(list(name = new_event_name, id = form_id))
-        #   )
-        # )
+
       }, ignoreInit = TRUE)
 
 
