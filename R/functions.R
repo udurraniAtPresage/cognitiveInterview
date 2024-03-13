@@ -10,6 +10,48 @@
 #     )
 # }
 
+
+#' Sanitize event name
+#'
+#' @param event_name name of workbook.
+#'
+#' @return sanitized event name.
+#' @export
+sanitized_sheet_name <- function(event_name) {
+  # Remove special characters using regular expression
+  sanitized_name <- gsub("[^A-Za-z0-9]", "", event_name)
+
+  # Truncate sheet name to maximum allowed length
+  truncated_name <- substr(sanitized_name, 1, 31)
+  truncated_name
+}
+
+
+
+#' Add worksheet with sanitized name
+#'
+#' @param workbook name of workbook.
+#' @param event_name event name.
+#' @param ... params of addWorksheet.
+#'
+#' @return adds worksheet.
+#' @export
+addWorksheetWithSanitizedName <- function(workbook, event_name, ...) {
+  tryCatch(
+    {
+      sanitized_event_name <- sanitized_sheet_name(event_name)
+
+      addWorksheet(workbook, sheetName = sanitized_event_name, ...)
+    },
+    error = function(e) {
+      # Print an error message or take other appropriate action
+      cat("An error occurred:", e$message, "\n")
+
+    }
+  )
+}
+
+
 #' Sign in
 #'
 #' @param email email of user.
@@ -18,7 +60,7 @@
 #'
 #' @return signed in user.
 #' @export
-sign.in <- function(email, password, api_key) {
+sign_in <- function(email, password, api_key) {
   r <- httr::POST(paste0("https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=", api_key),
                   httr::add_headers("Content-Type" = "application/json"),
                   body = jsonlite::toJSON(list(email = email, password = password, returnSecureToken = TRUE),auto_unbox=TRUE))

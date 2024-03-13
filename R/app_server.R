@@ -68,7 +68,7 @@ app_server <- function(input, output, session) {
 
 
   user_token <- reactive({
-    umair <- sign.in("udurrani@test.com", Sys.getenv("PASS"), Sys.getenv("FIREBASE_API_KEY"))
+    umair <- sign_in("udurrani@test.com", Sys.getenv("PASS"), Sys.getenv("FIREBASE_API_KEY"))
     umair$idToken
 
   })

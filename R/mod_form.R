@@ -38,6 +38,12 @@ mod_form_server <- function(id, constructs_vec, subtitles,
       # Event name as a function of day
       sim_event <- reactive(paste0("event_", gsub("\\s", "", event_name), "_", Day))
 
+      # sim_event <- reactive({
+      #   sim_event <- paste0("event_", gsub("\\s", "", event_name), "_", Day)
+      #   sim_event <- gsub("[^A-Za-z0-9]", "", sim_event)
+      #   sim_event
+      # })
+
       if (se) {
         stend <- layout_columns(
           textAreaInput(
@@ -308,12 +314,15 @@ mod_form_server <- function(id, constructs_vec, subtitles,
 
           )
 
-          if (event_name %in% full_workbook()$sheet_names){
-            removeWorksheet(full_workbook(), sheet = event_name)
+          sanitized_event_name <- sanitized_sheet_name(event_name)
+
+          if (sanitized_event_name %in% full_workbook()$sheet_names){
+            removeWorksheet(full_workbook(), sheet = sanitized_event_name)
           }
 
-          addWorksheet(full_workbook(), sheetName = event_name, gridLines = TRUE)
-          writeDataTable(full_workbook(), sheet = event_name, x = this_event_data,
+          # addWorksheet(full_workbook(), sheetName = event_name, gridLines = TRUE)
+          addWorksheetWithSanitizedName(full_workbook(), event_name = sanitized_event_name, gridLines = TRUE)
+          writeDataTable(full_workbook(), sheet = sanitized_event_name, x = this_event_data,
                          colNames = TRUE)
 
 
@@ -364,12 +373,15 @@ mod_form_server <- function(id, constructs_vec, subtitles,
 
           )
 
-          if (event_name %in% full_workbook()$sheet_names){
-            removeWorksheet(full_workbook(), sheet = event_name)
+          sanitized_event_name <- sanitized_sheet_name(event_name)
+
+          if (sanitized_event_name %in% full_workbook()$sheet_names){
+            removeWorksheet(full_workbook(), sheet = sanitized_event_name)
           }
 
-          addWorksheet(full_workbook(), sheetName = event_name, gridLines = TRUE)
-          writeDataTable(full_workbook(), sheet = event_name, x = this_event_data,
+          # addWorksheet(full_workbook(), sheetName = event_name, gridLines = TRUE)
+          addWorksheetWithSanitizedName(full_workbook(), event_name = sanitized_event_name, gridLines = TRUE)
+          writeDataTable(full_workbook(), sheet = sanitized_event_name, x = this_event_data,
                          colNames = TRUE)
 
 
@@ -515,7 +527,7 @@ mod_form_server <- function(id, constructs_vec, subtitles,
 #
 #   PROJECT_NAME = "brpa-dev"
 #
-#   sign.in <- function(email, password, api_key) {
+#   sign_in <- function(email, password, api_key) {
 #     r <- httr::POST(paste0("https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=", api_key),
 #                     httr::add_headers("Content-Type" = "application/json"),
 #                     body = jsonlite::toJSON(list(email = email, password = password, returnSecureToken = TRUE), auto_unbox = TRUE)
@@ -523,7 +535,7 @@ mod_form_server <- function(id, constructs_vec, subtitles,
 #     return(httr::content(r))
 #   }
 #
-#   ure <- sign.in("ag@oqfmaxhjb.ure", Sys.getenv("PASS"), Sys.getenv("FIREBASE_API_KEY"))
+#   ure <- sign_in("ag@oqfmaxhjb.ure", Sys.getenv("PASS"), Sys.getenv("FIREBASE_API_KEY"))
 #
 #
 #   # emailu <- ure$email

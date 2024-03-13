@@ -29,6 +29,11 @@ mod_pilot_server <- function(id, constructs_vec, subtitles,
 
       # Event name as a function of day
       sim_event <- reactive(paste0("event_", gsub("\\s", "", event_name), "_", Day, "_", gsub("\\s", "", Pilot()[element_num])))
+      # sim_event <- reactive({
+      #   sim_event <- paste0("event_", gsub("\\s", "", event_name), "_", Day, "_", gsub("\\s", "", Pilot()[element_num]))
+      #   sim_event <- gsub("[^A-Za-z0-9]", "", sim_event)
+      #   sim_event
+      # })
 
 
       # UI part: Show the form with - and + buttons for scoring constructs,
@@ -243,7 +248,7 @@ mod_pilot_server <- function(id, constructs_vec, subtitles,
 #   # Pilot2 <- "Umair"
 #   PROJECT_NAME = "brpa-dev"
 #
-#   sign.in <- function(email, password, api_key) {
+#   sign_in <- function(email, password, api_key) {
 #     r <- httr::POST(paste0("https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=", api_key),
 #                     httr::add_headers("Content-Type" = "application/json"),
 #                     body = jsonlite::toJSON(list(email = email, password = password, returnSecureToken = TRUE),auto_unbox=TRUE))
@@ -252,7 +257,7 @@ mod_pilot_server <- function(id, constructs_vec, subtitles,
 #
 #
 #
-#   ure <- sign.in("ag@oqfmaxhjb.ure", Sys.getenv("PASS"), Sys.getenv("FIREBASE_API_KEY"))
+#   ure <- sign_in("ag@oqfmaxhjb.ure", Sys.getenv("PASS"), Sys.getenv("FIREBASE_API_KEY"))
 #
 #
 #
