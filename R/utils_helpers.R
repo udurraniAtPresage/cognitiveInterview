@@ -12,12 +12,12 @@ subtitles <- c(
   Functional = "Instrument and Equipment Knowledge",
   Hierarchical = "Knowing the Procedures            ",
   "Task Empirical" = "Knowing the Limits                ",
-  Relational = "Keeping Each Other Safe           ",
-  Environmental = "Company Support for Safety        ",
+  Critical = "Relying on Experience             ",
+  Affective = "Gut Feel for Threats              ",
   Anticipatory = "Seeing the Threat                 ",
   Compensatory = "Adjusting to the Threat           ",
-  Affective = "Gut Feel for Threats              ",
-  Critical = "Relying on Experience             "
+  Relational = "Keeping Each Other Safe           ",
+  Environmental = "Company Support for Safety        "
 )
 
 
