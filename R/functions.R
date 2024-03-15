@@ -371,23 +371,40 @@ post_event_data_ci <- function(PROJECT_NAME, accessToken, Day,
   # Write data
   endpoint_cognitive_interview <- paste0("projects/", PROJECT_NAME, "/databases/(default)/documents/cognitive_interview")
 
-  write_request_ci <- post_data_to_firestore(
+  write_request_ci1 <- post_data_to_firestore(
+    db_endpoint = paste0(endpoint_cognitive_interview, "?documentId=",  name_combo),
+    data = NULL,
+    auth_token = accessToken
+  )
+  ## overwriting data if already exists
+  if (write_request_ci1$status_code == 409L) {
+    update_request_ci1 <- update_data_on_firestore(
+      db_endpoint = paste0(endpoint_cognitive_interview),
+      document_id = name_combo,
+      data = NULL,
+      auth_token = accessToken
+    )
+
+  }
+
+  write_request_ci2 <- post_data_to_firestore(
     db_endpoint = paste0(endpoint_cognitive_interview, "/", name_combo, "/", Day, "?documentId=", gsub("\\s", "_", event_name)),
     data = event_data_list,
     auth_token = accessToken
   )
 
+
   ## overwriting data if already exists
-  if (write_request_ci$status_code == 409L) {
-    update_request_ci <- update_data_on_firestore(
+  if (write_request_ci2$status_code == 409L) {
+    update_request_ci2 <- update_data_on_firestore(
       db_endpoint = paste0(endpoint_cognitive_interview, "/", name_combo, "/", Day),
       document_id = gsub("\\s", "_", event_name),
       data = event_data_list,
       auth_token = accessToken
     )
-    return(update_request_ci)
+    return(update_request_ci2)
   } else{
-    return(write_request_ci)
+    return(write_request_ci2)
   }
 }
 
