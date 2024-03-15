@@ -9,7 +9,7 @@ sign_in <- function(email, password, api_key) {
 
 
 
-ure <- sign_in("ag@oqfmaxhjb.ure", Sys.getenv("PASS"), Sys.getenv("FIREBASE_API_KEY"))
+ure <- sign_in("udurrani@presagegroup.com", Sys.getenv("PASS"), Sys.getenv("FIREBASE_API_KEY"))
 
 accessTokenu <- ure$idToken
 emailu <- ure$email

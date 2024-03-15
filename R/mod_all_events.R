@@ -98,7 +98,7 @@ mod_all_events_server <- function(id, constructs_vec, subtitles,
 
         removeModal()
 
-        new_event_name <-  gsub("[^A-Za-z0-9 ]", "", input$event_name) #input$event_name
+        new_event_name <-  gsub("^\\s+|\\s+$", "", gsub("[^A-Za-z0-9 ]", "", input$event_name)) #input$event_name
 
 
         form_id <- paste0(gsub("\\s", "", new_event_name), "_form")

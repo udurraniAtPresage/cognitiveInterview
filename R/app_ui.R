@@ -6,7 +6,6 @@
 #' @import bslib
 #' @import shinyjs
 #' @import firebase
-#' @import waiter
 #' @noRd
 #'
 # Header elements and Theme
@@ -115,9 +114,11 @@ golem_add_external_resources <- function() {
     # Add here other external resources
     # for example, you can add shinyalert::useShinyalert()
     # tags$script(type = "text/javascript", src = "www/scrollPage.js"),
+    golem::activate_js(),
+    golem::favicon(),
     tags$script(type = "text/javascript", src = "www/scrollPageNavbar.js"),
     tags$button(id = "scroll-to-top-button",
-                onclick = "topFunction()",
+                # onclick = "topFunction()",
                 "⇧"),
     tags$link(rel = "stylesheet", type = "text/css", href = "www/styles.css"),
     tags$script(src = "www/reset.js"),
@@ -127,6 +128,6 @@ golem_add_external_resources <- function() {
     tags$script(src = "www/change_color.js"),
     firebase::useFirebase(), # import dependencies
     shinyjs::useShinyjs(),
-    waiter::autoWaiter()
+    # waiter::autoWaiter()
   )
 }

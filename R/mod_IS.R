@@ -50,7 +50,7 @@ mod_IS_server <- function(id, constructs_vec, subtitles,
               id = "accord_IS",
               panel = accordion_panel(
                 title = event_name,
-                mod_form_ui(ns(paste0("form_", event_name)))
+                mod_form_ui(ns(paste0("form_", gsub("\\s", "", event_name))))
               )
             )
 
@@ -64,7 +64,7 @@ mod_IS_server <- function(id, constructs_vec, subtitles,
 
 
             mod_form_server(
-              id = paste0("form_", event_name),
+              id = paste0("form_", gsub("\\s", "", event_name)),
               constructs_vec,
               subtitles,
               choice_names = c("-", "+"),

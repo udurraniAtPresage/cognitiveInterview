@@ -11,7 +11,6 @@
 #' @import dplyr
 #' @import tidyr
 #' @import tibble
-#' @import waiter
 #' @noRd
 app_server <- function(input, output, session) {
 
