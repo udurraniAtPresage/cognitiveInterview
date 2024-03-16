@@ -84,6 +84,10 @@ app_ui <- function(request) {
       nav_spacer(),
 
       nav_item(
+        shiny::downloadButton("save_all", label = "Download all data", class = "download-button")
+        ),
+
+      nav_item(
         uiOutput("sign_out_button")
       )
     )

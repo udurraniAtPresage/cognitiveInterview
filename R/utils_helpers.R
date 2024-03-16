@@ -100,13 +100,11 @@ instructor_pilots_name_inputs <- shiny::tagList(
   shiny::uiOutput("aircraft_select"),
 
 
-  actionButton("generate", "Generate", class = "save-button"),
+  actionButton("generate", "Generate", class = "save-button")#,
 
-  shiny::br(),
-  shiny::br(),
+  # shiny::br(),
+  # shiny::br(),
 
-
-  shiny::downloadButton("save_all", label = "Download all data", class = "download-button")
   # br(),
   # br(),
   # br()

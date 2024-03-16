@@ -437,13 +437,62 @@ app_server <- function(input, output, session) {
 
   output$save_all <- downloadHandler(
     filename = function() {
-      paste0(SME(), "_", Instructor(), "_", pilotz_vec(), "_", input$day, ".xlsx")
+      # paste0(SME(), "_", Instructor(), "_", pilotz_vec(), "_", input$day, ".xlsx")
+      paste0(SME(), "_", Instructor(), "_", pilotz_vec(), ".xlsx")
     },
     content = function(file) {
-      if ("Sheet1" %in% full_workbook()$sheet_names){
-        removeWorksheet(full_workbook(), sheet = "Sheet1")
+      # if ("Sheet1" %in% full_workbook()$sheet_names){
+      #   removeWorksheet(full_workbook(), sheet = "Sheet1")
+      # }
+      # saveWorkbook(full_workbook(), file, overwrite = TRUE)
+      if (input$data_select == "New"){
+
+        if (length(pilotz_vec()) == 2){
+          Pilots <- paste(pilotz_vec(), collapse = "_")
+        } else{
+          Pilots <- pilotz_vec()
+        }
+
+        name_combo <- paste0(
+          strsplit(x = SME(), split = " ")[[1]][1],
+          "_",
+          strsplit(x = Instructor(), split = " ")[[1]][1],
+          "_",
+          Pilots
+        )
+        # print(name_combo)
+      } else {
+        name_combo <- input$data_select
       }
-      saveWorkbook(full_workbook(), file, overwrite = TRUE)
+      all_events_for_all_days <- get_data_for_all_days_for_a_combo(user_token(),
+                                                                   matching_name = name_combo,
+                                                                   project_name = "brpa-dev")
+      if (length(pilotz_vec()) == 2){
+        all_events_for_all_days <- all_events_for_all_days |>
+          dplyr::relocate(
+            Day, SME, Instructor, Aircraft,
+            Pilot1, Pilot1_title, Pilot1_status,
+            Pilot2, Pilot2_title, Pilot2_status,
+            Event = name, Event_Start, Event_End,
+            everything()
+          )
+      } else {
+      all_events_for_all_days <- all_events_for_all_days |>
+        dplyr::relocate(
+          Day, SME, Instructor, Aircraft,
+          Pilot1, Pilot1_title, Pilot1_status,
+          Event = name, Event_Start, Event_End,
+          everything()
+        )
+}
+      full_workbook2 <- createWorkbook()
+
+      addWorksheet(full_workbook2, sheetName = "All_Data", gridLines = TRUE)
+      writeDataTable(full_workbook2, sheet = "All_Data",
+                     x = all_events_for_all_days,
+                     colNames = TRUE)
+
+      saveWorkbook(full_workbook2, file, overwrite = TRUE)
     }
   )
 }
