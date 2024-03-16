@@ -77,10 +77,9 @@ app_ui <- function(request) {
         shiny::uiOutput("day_page")
       ),
 
-      # nav_panel(
-      #   title = "Saved Data",
-      #
-      # ),
+      nav_item(
+        actionButton("start_over", "Start Over", class = "btn btn-primary"),
+      ),
 
       nav_spacer(),
 

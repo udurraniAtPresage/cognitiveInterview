@@ -22,6 +22,11 @@ app_server <- function(input, output, session) {
 
   session$allowReconnect(TRUE)
 
+
+  observeEvent(input$start_over, {
+    session$reload()
+  })
+
   ## Firebase authentication ---------------------------------------------------
   ## Persistence: 'local' means the session would persist even when window is closed
   ### That means a user will remain signed in even when the app window is closed
@@ -72,50 +77,208 @@ app_server <- function(input, output, session) {
 
   })
 
-  # observe({
-  #   req(input$numpilots)
-  #   print(input$numpilots)
-  #   if (input$numpilots == "1"){
-  #     shinyjs::disable(id = "pname2")
-  #   }
+
+  # Get all name combinations (SME_Instructor_Pilot1_Pilot2) from cognitive_interview collection
+  all_name_combos <- reactive({get_all_name_combos(user_token(), PROJECT_NAME)})
+
+
+
+  matching_names <- reactive({
+    req(input$smename)
+    SME_list <- unlist(strsplit(input$smename, " "))
+    all_name_combos()[grepl(paste(SME_list, collapse = "|"), all_name_combos())]
+  })
+
+  output$data_select <- renderUI({
+    selectInput(
+      inputId = "data_select",
+      label = "Select existing data:",
+      choices = c("New", matching_names()),
+      selected = "New"
+    )
+  })
+
+
+  # all_events_for_all_days <- reactive({
+  #   get_data_for_all_days_for_a_combo(user_token(),
+  #                                     matching_name = input$data_select,
+  #                                     project_name = PROJECT_NAME)
   # })
 
-  observeEvent(input$numpilots, {
+  all_events_of_a_day <- reactive({
+    req(input$day)
+    get_ci_data_for_a_day_v2(user_token(),
+                             matching_name = input$data_select,
+                             input$day,
+                             project_name = PROJECT_NAME)
+    # all_events_for_all_days() |>
+    #   dplyr::filter(Day == input$day)
+  })
+
+
+
+
+  output$num_pilots_selection <- renderUI({
+
+    if (!is.null(all_events_of_a_day())){
+
+      if (is.null(all_events_of_a_day()$Pilot2)){
+        number_of_pilots <- 1
+      } else {
+        number_of_pilots <- 2
+      }
+
+      shiny::selectInput(
+        inputId = "numpilots",
+        label = "Select # of pilots:",
+        choices = c(1, 2),
+        selected = number_of_pilots
+      )
+    } else {
+      shiny::selectInput(
+        inputId = "numpilots",
+        label = "Select # of pilots:",
+        choices = c(1, 2),
+        selected = 1
+      )
+    }
+  })
+
+
+
+  pilot1_id <- reactive({
+    if (!is.null(all_events_of_a_day())){
+      unique(all_events_of_a_day()$Pilot1)
+    } else{
+      ""
+    }
+  })
+
+  pilot2_id <- reactive({
+    if (!is.null(all_events_of_a_day())){
+      unique(all_events_of_a_day()$Pilot2)
+    } else{
+      ""
+    }
+  })
+
+
+  observe({
     req(input$numpilots)
+    req(input$day)
 
-    if (input$numpilots == "2"){
-      output$pilotz <- renderUI({
-        tagList(
-          textInput(
-            inputId = "pname1",
-            label = HTML("ID of Pilot 1: <span style='color:red'>*</span>"),
-            value = ""
-          ),
+    if (!is.null(all_events_of_a_day())){
+      if (input$numpilots == "2"){
+        # print("2 pilots")
+        # print(unique(all_events_of_a_day()$Pilot1))
+        # print(unique(all_events_of_a_day()$Pilot2))
+        # print(class(unique(all_events_of_a_day()$Pilot1)))
+        output$pilotz <- renderUI({
+          tagList(
+            textInput(
+              inputId = "pname1",
+              label = HTML("ID of Pilot 1: <span style='color:red'>*</span>"),
+              value = pilot1_id() #unique(all_events_of_a_day()$Pilot1)
+            ),
 
-          textInput(
-            inputId = "pname2",
-            label = HTML("ID of Pilot 2: <span style='color:red'>*</span>"),
-            value = ""
+            textInput(
+              inputId = "pname2",
+              label = HTML("ID of Pilot 2: <span style='color:red'>*</span>"),
+              value = pilot2_id() #unique(all_events_of_a_day()$Pilot2)
+            )
           )
-        )
-      })
+        })
 
 
 
-    } else if (input$numpilots == "1"){
-      output$pilotz <- renderUI({
-        tagList(
-          textInput(
-            inputId = "pname1",
-            label = HTML("ID of Pilot: <span style='color:red'>*</span>"),
-            value = ""
+      } else if (input$numpilots == "1"){
+        # print("1 pilot")
+        # print(unique(all_events_of_a_day()$Pilot1))
+        # print(class(unique(all_events_of_a_day()$Pilot1)))
+        output$pilotz <- renderUI({
+          tagList(
+            textInput(
+              inputId = "pname1",
+              label = HTML("ID of Pilot: <span style='color:red'>*</span>"),
+              value = pilot1_id() #unique(all_events_of_a_day()$Pilot1)
+            )
           )
-        )
-      })
+        })
+      }
+
+    } else {
+
+      if (input$numpilots == "2"){
+        output$pilotz <- renderUI({
+          tagList(
+            textInput(
+              inputId = "pname1",
+              label = HTML("ID of Pilot 1: <span style='color:red'>*</span>"),
+              value = ""
+            ),
+
+            textInput(
+              inputId = "pname2",
+              label = HTML("ID of Pilot 2: <span style='color:red'>*</span>"),
+              value = ""
+            )
+          )
+        })
 
 
+
+      } else if (input$numpilots == "1"){
+        output$pilotz <- renderUI({
+          tagList(
+            textInput(
+              inputId = "pname1",
+              label = HTML("ID of Pilot: <span style='color:red'>*</span>"),
+              value = ""
+            )
+          )
+        })
+      }
     }
 
+  })
+
+
+
+  output$instructor_select <- renderUI({
+
+    if (!is.null(all_events_of_a_day())){
+      shiny::textInput(
+        inputId = "iname",
+        label = HTML("Name of Instructor: <span style='color:red'>*</span>"),
+        value = unique(all_events_of_a_day()$Instructor)
+      )
+
+    } else {
+      shiny::textInput(
+        inputId = "iname",
+        label = HTML("Name of Instructor: <span style='color:red'>*</span>"),
+        value = ""
+      )
+    }
+  })
+
+
+
+  output$aircraft_select <- renderUI({
+    if (!is.null(all_events_of_a_day())){
+      # print(unique(all_events_of_a_day()$Aircraft))
+      shiny::textInput(
+        inputId = "aircraft",
+        label = shiny::HTML("Aircraft type: <span style='color:red'>*</span>"),
+        value = unique(all_events_of_a_day()$Aircraft)
+      )
+    } else {
+      shiny::textInput(
+        inputId = "aircraft",
+        label = shiny::HTML("Aircraft type: <span style='color:red'>*</span>"),
+        value = ""
+      )
+    }
   })
 
 

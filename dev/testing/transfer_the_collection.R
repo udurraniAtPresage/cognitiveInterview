@@ -2,7 +2,7 @@ library(httr)
 library(jsonlite)
 library(tidyverse)
 
-source("R/functions.R")
+# source("R/functions.R")
 PROJECT_NAME <- "brpa-dev"
 
 sign_in <- function(email, password, api_key) {

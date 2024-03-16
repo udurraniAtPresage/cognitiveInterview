@@ -2,6 +2,9 @@
 
 PROJECT_NAME <- Sys.getenv("FIREBASE_PROJECT_ID")
 
+all_days <- purrr::map(1:10, function(x) paste0("Day",x)) |> purrr::list_c()
+all_days <- setNames(all_days, nm = all_days)
+
 constructs_vec <- c(
   "Functional", "Hierarchical", "Task Empirical",
   "Critical", "Affective", "Anticipatory",
@@ -45,18 +48,34 @@ instructor_pilots_name_inputs <- shiny::tagList(
     )
   ),
 
+  shiny::uiOutput("data_select"),
 
-  shiny::textInput(
-    inputId = "iname",
-    label = HTML("Name of Instructor: <span style='color:red'>*</span>"),
-    value = ""
+  shiny::selectizeInput(
+    inputId = "day",
+    label = HTML("Select Day: <span style='color:red'>*</span>"),
+    choices = c("Day1", "Day2", "Day3", "Day4", "Day5", "Day6", "Day7",
+                "Day8", "Day9", "Day10"),
+    options = list(
+      placeholder = 'Select day',
+      onInitialize = I('function() { this.setValue(""); }')
+    )
   ),
 
-  shiny::selectInput(
-    inputId = "numpilots",
-    label = "Select # of pilots:",
-    choices = c(1, 2), selected = 1
-  ),
+  # shiny::textInput(
+  #   inputId = "iname",
+  #   label = HTML("Name of Instructor: <span style='color:red'>*</span>"),
+  #   value = ""
+  # ),
+
+  shiny::uiOutput("instructor_select"),
+
+  # shiny::selectInput(
+  #   inputId = "numpilots",
+  #   label = "Select # of pilots:",
+  #   choices = c(1, 2), selected = 1
+  # ),
+
+  shiny::uiOutput("num_pilots_selection"),
 
   shiny::uiOutput("pilotz"),
 
@@ -72,22 +91,14 @@ instructor_pilots_name_inputs <- shiny::tagList(
   #   value = ""
   # ),
 
-  shiny::textInput(
-    inputId = "aircraft",
-    label = shiny::HTML("Aircraft type: <span style='color:red'>*</span>"),
-    value = ""
-  ),
+  # shiny::textInput(
+  #   inputId = "aircraft",
+  #   label = shiny::HTML("Aircraft type: <span style='color:red'>*</span>"),
+  #   value = ""
+  # ),
 
-  shiny::selectizeInput(
-    inputId = "day",
-    label = HTML("Select Day: <span style='color:red'>*</span>"),
-    choices = c("Day1", "Day2", "Day3", "Day4", "Day5", "Day6", "Day7",
-                "Day8", "Day9", "Day10"),
-    options = list(
-      placeholder = 'Select day',
-      onInitialize = I('function() { this.setValue(""); }')
-    )
-  ),
+  shiny::uiOutput("aircraft_select"),
+
 
   actionButton("generate", "Generate", class = "save-button"),
 
