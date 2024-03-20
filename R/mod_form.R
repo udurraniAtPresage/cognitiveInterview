@@ -107,7 +107,7 @@ mod_form_server <- function(id, constructs_vec, subtitles,
           layout_columns(
             selectInput(ns("FM1"),
                         label = paste0(pilot_vec()[1], " is:"),
-                        choices = c("PM", "PF"),
+                        choices = c("PF", "PM"),
                         selected = if (is.null(fs_data_event)) {NULL} else {fs_data_event["Pilot1_status"]}
                         ),
             textOutput(ns("FM2"))

@@ -209,27 +209,28 @@ mod_all_events_server <- function(id, constructs_vec, subtitles,
 
 
 
-      output$choose_events_for_discussion <- renderUI({
-
-
-        if (length(all_events$namez) < 1) {
-          p("")
-        } else {
-
-          checkboxGroupInput(
-            inputId = ns("checkz"),
-            label = h5("Select the events for later discussion with Instructor:"),
-            width = "1200px",
-            choices = all_events$namez
-          )
-        }
-      })
+      # output$choose_events_for_discussion <- renderUI({
+      #
+      #
+      #   if (length(all_events$namez) < 1) {
+      #     p("")
+      #   } else {
+      #
+      #     checkboxGroupInput(
+      #       inputId = ns("checkz"),
+      #       label = h5("Select the events for later discussion with Instructor:"),
+      #       width = "1200px",
+      #       choices = all_events$namez
+      #     )
+      #   }
+      # })
 
 
       return(
-        reactive(list(event_names = all_events$namez,
+        reactive(list(event_names = all_events$namez#,
                       # event_data = all_events$event_data,
-                      highlighted_events = input$checkz))
+                      # highlighted_events = input$checkz
+                      ))
       )
 
     }

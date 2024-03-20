@@ -37,22 +37,23 @@ mod_stu_interview_server <- function(id, constructs_vec, subtitles,
 
         if (!is.null( event_names())){
 
-          choices <- event_names() %in% event_info()$highlighted_events
-          choices_highlighted <- lapply(seq_along(choices), function(i)
-            if (choices[i]) {
-              strong(span(event_names()[i], style="color:#0072bc"))
-            } else {
-              event_names()[i]
-            }
-          )
+          # choices <- event_names() %in% event_info()$highlighted_events
+          # choices_highlighted <- lapply(seq_along(choices), function(i)
+          #   if (choices[i]) {
+          #     strong(span(event_names()[i], style="color:#0072bc"))
+          #   } else {
+          #     event_names()[i]
+          #   }
+          # )
 
           if (!is.null(stu_data)) {
 
             radioButtons(
               inputId = ns("event_select"),
               label = h4("Select event of interest:"),
-              choiceNames = choices_highlighted,
-              choiceValues = event_names(),
+              # choiceNames = choices_highlighted,
+              # choiceValues = event_names(),
+              choices = event_names(),
               selected = if (is.null(stu_data)) {
                 character(0)
                 } else if (length(unique(stu_data$name)) > 1){
@@ -71,8 +72,9 @@ mod_stu_interview_server <- function(id, constructs_vec, subtitles,
             radioButtons(
               inputId = ns("event_select"),
               label = h4("Select event of interest:"),
-              choiceNames = choices_highlighted,
-              choiceValues = event_names(),
+              # choiceNames = choices_highlighted,
+              # choiceValues = event_names(),
+              choices = event_names(),
               selected = character(0),
               width = 500
             )
