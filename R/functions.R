@@ -678,12 +678,17 @@ get_data_for_all_days_for_a_combo <- function(accessToken, matching_name, projec
   purrr::map_dfr(
     all_days,
     function(day){
-      get_ci_data_for_a_day_v2(accessToken,
-                               matching_name,
-                               day,
-                               project_name)
-    },
-    .id = "Day"
+      res <- get_ci_data_for_a_day_v2(accessToken,
+                                      matching_name,
+                                      day,
+                                      project_name)
+      if (!is.null(res)){
+        res |>
+          dplyr::mutate(Day = day)
+      } else {
+        res
+      }
+    }
   )
 }
 
